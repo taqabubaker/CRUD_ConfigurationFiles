@@ -1,0 +1,74 @@
+﻿@page
+@model CRUD.Pages.Customers.IndexModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+@{
+    var seq = (Model.Customers.PageIndex - 1) * Model.Customers.PageSize ;
+}
+<form method="post">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>@Html.DisplayNameFor(m => m.Customers[0].Name)</th>
+                <th>@Html.DisplayNameFor(m => m.Customers[0].Age)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model.Customers)
+            {
+                <tr>
+                    <td>@(++seq)</td>
+                    <td>@customer.Name</td>
+                    <td>@customer.Age</td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@customer.Id" class="btn btn-primary">Edit</a>
+                        <button asp-page-handler="DeleteCustomer"
+                                asp-route-id="@customer.Id" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+<a asp-page="./Create">Create</a>
+
+@{
+    var prevDisabled = !Model.Customers.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Customers.HasNextPage ? "disabled" : "";
+}
+
+
+<ul class="pagination">
+    <li class="page-item @prevDisabled">
+        <a asp-page="./Index"
+           asp-route-pageIndex="@(Model.Customers.PageIndex - 1)"
+           class="page-link">
+            Previous
+        </a>
+    </li>
+    @for (int i = 1; i <= Model.Customers.TotalPages; i++)
+    {
+        <li class="page-item @(Model.Customers.PageIndex == i ? "active" : "")">
+            <a asp-page="./Index"
+               asp-route-pageIndex="@(i)"
+               class="page-link">
+                @(i)
+            </a>
+        </li>
+    }
+    <li class="page-item @nextDisabled">
+        <a asp-page="./Index"
+           asp-route-pageIndex="@(Model.Customers.PageIndex + 1)"
+           class="page-link">
+            Next
+        </a>
+    </li>
+</ul>
